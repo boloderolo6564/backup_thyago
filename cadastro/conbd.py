@@ -329,16 +329,35 @@ def comprarproduto(conbd,):
     mycursor.execute(sql2,val2,)
     resultados = mycursor
     for linha in resultados:
-            preco = linha[3]               
+            preco = linha[3]
+    sql3 = "select quantidade from estoque where id_produto = %s"
+    val3 = (id_produto,)
+    mycursor.execute(sql3,val3)
+    estoque = mycursor.fetchone()
+    estoque = estoque[0]
+    estoque = int(estoque)
     quantidade = int(input("quantas unidades deste produto você deseja:"))
-    pg= input("digite qual metodo de pagamento ira utilizar:")
-    valor = preco * quantidade    
-    res += valor
-    print("compra realizada no valor :",res)
-    avaliacao = int(input("de 1 a 5 quanto satisfeito está com o produto :"))
-    coment = input("digite seu comentarios sobre o produto:")
+    if quantidade > estoque:
+        if estoque > 1:
+            print("não possuimos toda essa quantidade em estoque temos apenas ",estoque)
+        elif estoque <1:
+            print("não possuimos esse item em estoque ")
+        
+        print("não possuimos essa quantidade em estoque")
+    elif quantidade < estoque:
+        estoque = estoque - quantidade
+        sql = "update estoque set quantidade = %s where id_produto = %s"
+        val = (estoque,id_produto)
+        mycursor.execute(sql,val)
 
-    return id_produto,res,quantidade,pg,avaliacao,coment
+        pg= input("digite qual metodo de pagamento ira utilizar:")
+        valor = preco * quantidade    
+        res += valor
+        print("compra realizada no valor :",res)
+        avaliacao = int(input("de 1 a 5 quanto satisfeito está com o produto :"))
+        coment = input("digite seu comentarios sobre o produto:")
+
+        return id_produto,res,quantidade,pg,avaliacao,coment
 def criarpedido(conbd,):
     data = date.today()
     mycursor = conbd.cursor()
@@ -389,7 +408,7 @@ def buscar(conbd,):
         conteu = "select*from fornecedores"
     elif op == 5:
         conteu = "select*from promocoes"
-    nome = input("digite o que deseja encontrar:")
+    nome = input("digite o que deseja encontrar digite ou 0 para listar tudo:")
     mycursor = conbd.cursor()
     sql = conteu
     mycursor.execute(sql,)
@@ -397,23 +416,23 @@ def buscar(conbd,):
     for linha in resultados:
         if conteu == "select*from produtos":
             rota = "produtos"
-            if nome in linha[1]:
+            if nome in linha[1] or nome == "0":
                 print("|id:",linha[0],"|nome:",linha[1],"|descrição:",linha[2],"|preco:",linha[3])
         elif conteu =="select*from clientes":
             rota = "delete from clientes where id_cliente = %s"
-            if nome in linha[1]:
+            if nome in linha[1] or nome == "0":
                 print("|id:",linha[0],"|nome:",linha[1],"|sobrenome:",linha[2],"|cidade:",linha[3],"|endereco:",linha[4],"|codigo_postal:",linha[5])
         elif conteu == "select*from fornecedores":
             rota = "delete from fornecedores where id_fornecedor = %s"
-            if nome in linha[1]:
+            if nome in linha[1] or nome == "0":
                 print("|id:",linha[0],"|nome:",linha[1],"|contato:",linha[2],"|endereço:",linha[3])
         elif conteu == "select*from funcionarios":
             rota = "delete from funcionarios where id_ = %s"
-            if nome in linha[1]:
+            if nome in linha[1] or nome == "0":
                 print("|id:",linha[0],"|nome:",linha[1],"|cargo:",linha[2],"|departamento:",linha[3])
         elif conteu == "select*from promocoes":
             rota = "delete from promocoes where id_promocao = %s"
-            if nome in linha[1]:
+            if nome in linha[1] or nome == "0":
                 print("|id:",linha[0],"|nome:",linha[1],"|descrição:",linha[2],"|data inicial:",linha[3],"|data final:",linha[4])
     conbd.commit()
     mycursor.close()

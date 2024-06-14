@@ -13,7 +13,7 @@ while True:
             preco = float(input("digite o valor do produto:"))
             tipo = input("digite o categoria do seu produto:")
             catego = input("digite a descrição da categoria dele:")
-            quantidade = input("digite a quantidade deste produto:")
+            quantidade = int(input("digite a quantidade deste produto:"))
             data = input("digite a data seguindo o seguinte parametro DD-MM-AAAA:")
             data = datetime.strptime(data,"%d-%m-%Y").strftime("%Y-%m,%d")
             cadastrarproduto(conbd,nome,descricao,preco,tipo,catego,quantidade,data)
