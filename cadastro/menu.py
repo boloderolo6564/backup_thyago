@@ -1,3 +1,4 @@
+from test import*
 from cone import*
 from conbd import*
 from datetime import datetime
@@ -38,13 +39,16 @@ while True:
             datafim = datetime.strptime(datafim ,("%d-%m-%Y")).strftime("%Y-%m-%d")
             cadastrarpromocoes(conbd,nome,descricao,datainicio,datafim)
     elif op == 2:
-        alterar(conbd)
+        alterar_espec(conbd)
     elif op == 3:
         deletar(conbd,)
     elif op == 4:
         buscar(conbd,)
     elif op ==5:
         criarpedido(conbd,)
+    elif op == 6:
+        alterar(conbd,)
+    
     elif op == 0 :
         print("programa encerado")
         break
